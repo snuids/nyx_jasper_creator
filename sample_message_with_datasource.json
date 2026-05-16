@@ -1,0 +1,8 @@
+{
+  "template": "templates/json_datasource_report.jrxml",
+  "parameters": {
+    "REPORT_TITLE": "Product Inventory Report"
+  },
+  "jsonUrl": "https://jsonplaceholder.typicode.com/users",
+  "outputName": "inventory_report"
+}

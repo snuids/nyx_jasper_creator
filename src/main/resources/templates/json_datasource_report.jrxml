@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+              http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="json_datasource_example" pageWidth="595" pageHeight="842" 
+              columnWidth="555" leftMargin="20" rightMargin="20" 
+              topMargin="20" bottomMargin="20">
+    
+    <!-- Parameters -->
+    <parameter name="REPORT_TITLE" class="java.lang.String" isForPrompting="false">
+        <defaultValueExpression><![CDATA["JSON Datasource Report"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="GENERATION_TIME" class="java.lang.String"/>
+    
+    <!-- Fields from JSON datasource -->
+    <!-- This example assumes JSON structure like: [{"name": "...", "value": "...", "status": "..."}] -->
+    <field name="name" class="java.lang.String">
+        <fieldDescription><![CDATA[name]]></fieldDescription>
+    </field>
+    <field name="value" class="java.lang.String">
+        <fieldDescription><![CDATA[value]]></fieldDescription>
+    </field>
+    <field name="status" class="java.lang.String">
+        <fieldDescription><![CDATA[status]]></fieldDescription>
+    </field>
+    
+    <!-- Title Band -->
+    <title>
+        <band height="80">
+            <textField>
+                <reportElement x="0" y="0" width="555" height="35"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="20" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{REPORT_TITLE}]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="0" y="40" width="555" height="1"/>
+            </line>
+            <staticText>
+                <reportElement x="0" y="50" width="100" height="20"/>
+                <textElement>
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Generated:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="100" y="50" width="455" height="20"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{GENERATION_TIME}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    
+    <!-- Column Header -->
+    <columnHeader>
+        <band height="30">
+            <staticText>
+                <reportElement mode="Opaque" x="0" y="0" width="185" height="25" backcolor="#E0E0E0"/>
+                <box padding="5">
+                    <pen lineWidth="1"/>
+                </box>
+                <textElement verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Name]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="185" y="0" width="185" height="25" backcolor="#E0E0E0"/>
+                <box padding="5">
+                    <pen lineWidth="1"/>
+                </box>
+                <textElement verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Value]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="370" y="0" width="185" height="25" backcolor="#E0E0E0"/>
+                <box padding="5">
+                    <pen lineWidth="1"/>
+                </box>
+                <textElement verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Status]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    
+    <!-- Detail Band - Repeats for each record in JSON array -->
+    <detail>
+        <band height="25">
+            <textField isStretchWithOverflow="true">
+                <reportElement x="0" y="0" width="185" height="25"/>
+                <box padding="5">
+                    <pen lineWidth="0.5"/>
+                </box>
+                <textElement verticalAlignment="Middle">
+                    <font size="11"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true">
+                <reportElement x="185" y="0" width="185" height="25"/>
+                <box padding="5">
+                    <pen lineWidth="0.5"/>
+                </box>
+                <textElement verticalAlignment="Middle">
+                    <font size="11"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{value}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true">
+                <reportElement x="370" y="0" width="185" height="25"/>
+                <box padding="5">
+                    <pen lineWidth="0.5"/>
+                </box>
+                <textElement verticalAlignment="Middle">
+                    <font size="11"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    
+    <!-- Page Footer -->
+    <pageFooter>
+        <band height="30">
+            <line>
+                <reportElement x="0" y="5" width="555" height="1"/>
+            </line>
+            <textField>
+                <reportElement x="0" y="10" width="200" height="20"/>
+                <textElement>
+                    <font size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Nyx Jasper Creator"]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="455" y="10" width="100" height="20"/>
+                <textElement textAlignment="Right">
+                    <font size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+    
+</jasperReport>

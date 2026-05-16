@@ -1,0 +1,12 @@
+{
+  "template": "templates/report_template.jrxml",
+  "parameters": {
+    "REPORT_TITLE": "Sample Report",
+    "CUSTOMER_NAME": "John Doe",
+    "ORDER_ID": "12345",
+    "ORDER_DATE": "2026-05-16",
+    "TOTAL_AMOUNT": "1250.00"
+  },
+  "outputName": "custom_report_name",
+  "jsonUrl": "https://api.example.com/data.json"
+}
