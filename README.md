@@ -97,7 +97,7 @@ module.version=1.0.0
 All properties can be overridden using environment variables:
 
 ```bash
-export ACTIVEMQ_BROKER_URL=tcp://energy.marmar.ovh:61616
+export ACTIVEMQ_BROKER_URL=tcp://localhost:61616
 export ACTIVEMQ_USERNAME=admin
 export ACTIVEMQ_PASSWORD=admin
 export ACTIVEMQ_QUEUE_NAME=nyx.jasper.queue
@@ -224,7 +224,7 @@ docker build -t nyx-jasper-creator .
 # Run with Docker
 docker run -d \
   --name nyx-jasper-creator \
-  -e ACTIVEMQ_BROKER_URL=tcp://energy.marmar.ovh:61616 \
+  -e ACTIVEMQ_BROKER_URL=tcp://localhost:61616 \
   -e ACTIVEMQ_USERNAME=admin \
   -e ACTIVEMQ_PASSWORD=admin \
   -v $(pwd)/reports:/app/reports \
