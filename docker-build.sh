@@ -3,6 +3,7 @@
 
 set -e
 
+
 echo "🚀 Building NYX Jasper Creator Docker image..."
 docker build -t nyx-jasper-creator .
 
