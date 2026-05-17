@@ -1,7 +1,7 @@
 package com.nyx.jasper;
 
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.data.JsonDataSource;
+import net.sf.jasperreports.json.data.JsonDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

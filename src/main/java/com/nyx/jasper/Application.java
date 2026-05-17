@@ -19,6 +19,7 @@ public class Application {
     private Connection connection;
     private Session session;
     private MessageConsumer consumer;
+    private MessageConsumer uploadConsumer;
     private StatusPublisher statusPublisher;
 
     public static void main(String[] args) {
@@ -49,6 +50,7 @@ public class Application {
         String username = config.getProperty("activemq.username", "admin");
         String password = config.getProperty("activemq.password", "admin");
         String queueName = config.getProperty("activemq.queue.name", "nyx.jasper.queue");
+        String uploadQueueName = config.getProperty("activemq.upload.queue.name", "JASPER_UPLOAD");
         String statusTopicName = config.getProperty("activemq.status.topic", "RPN_MODULE_INFO");
         int statusIntervalSeconds = Integer.parseInt(config.getProperty("status.interval.seconds", "5"));
         String moduleName = config.getProperty("module.name", "nyx_jasper_creator");
@@ -57,6 +59,7 @@ public class Application {
         
         logger.info("Connecting to ActiveMQ broker: {}", brokerUrl);
         logger.info("Listening to queue: {}", queueName);
+        logger.info("Listening to upload queue: {}", uploadQueueName);
         logger.info("Publishing status to topic: {}", statusTopicName);
         logger.info("Report output directory: {}", outputDirectory);
 
@@ -100,6 +103,14 @@ public class Application {
         consumer.setMessageListener(new QueueMessageListener(
             statusPublisher.getStatusMessage(), queueName, reportGeneratorManager));
 
+        // Create upload queue consumer
+        Destination uploadDestination = session.createQueue(uploadQueueName);
+        uploadConsumer = session.createConsumer(uploadDestination);
+        
+        // Set template upload listener
+        uploadConsumer.setMessageListener(new TemplateUploadListener(
+            statusPublisher.getStatusMessage()));
+
         logger.info("ActiveMQ listener started successfully");
         logger.info("Waiting for messages...");
 
@@ -136,6 +147,10 @@ public class Application {
      */
     public void close() {
         try {
+            if (uploadConsumer != null) {
+                uploadConsumer.close();
+                logger.info("Upload consumer closed");
+            }
             if (statusPublisher != null) {
                 statusPublisher.stop();
                 logger.info("Status publisher stopped");
