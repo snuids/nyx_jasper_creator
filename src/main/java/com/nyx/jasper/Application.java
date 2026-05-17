@@ -21,6 +21,7 @@ public class Application {
     private MessageConsumer consumer;
     private MessageConsumer uploadConsumer;
     private StatusPublisher statusPublisher;
+    private RestApiServer restApiServer;
 
     public static void main(String[] args) {
         Application app = new Application();
@@ -56,12 +57,18 @@ public class Application {
         String moduleName = config.getProperty("module.name", "nyx_jasper_creator");
         String moduleVersion = config.getProperty("module.version", "1.0.0");
         String outputDirectory = config.getProperty("jasper.output.directory", "reports");
+        int restApiPort = Integer.parseInt(config.getProperty("rest.api.port", "8080"));
+        boolean restApiEnabled = Boolean.parseBoolean(config.getProperty("rest.api.enabled", "true"));
         
         logger.info("Connecting to ActiveMQ broker: {}", brokerUrl);
         logger.info("Listening to queue: {}", queueName);
         logger.info("Listening to upload queue: {}", uploadQueueName);
         logger.info("Publishing status to topic: {}", statusTopicName);
         logger.info("Report output directory: {}", outputDirectory);
+        logger.info("REST API enabled: {}", restApiEnabled);
+        if (restApiEnabled) {
+            logger.info("REST API port: {}", restApiPort);
+        }
 
         // Create connection factory
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
@@ -112,6 +119,23 @@ public class Application {
             statusPublisher.getStatusMessage()));
 
         logger.info("ActiveMQ listener started successfully");
+
+        // Start REST API server if enabled
+        if (restApiEnabled && reportGeneratorManager != null) {
+            try {
+                restApiServer = new RestApiServer(restApiPort, reportGeneratorManager, 
+                                                  statusPublisher.getStatusMessage());
+                restApiServer.start();
+            } catch (Exception e) {
+                logger.error("Failed to start REST API server. Continuing with ActiveMQ only.", e);
+                statusPublisher.getStatusMessage().setInternalerrors(
+                    statusPublisher.getStatusMessage().getInternalerrors() + 1
+                );
+            }
+        } else if (restApiEnabled && reportGeneratorManager == null) {
+            logger.warn("REST API server disabled because ReportGeneratorManager failed to initialize");
+        }
+
         logger.info("Waiting for messages...");
 
         // Keep the application running
@@ -161,7 +185,9 @@ public class Application {
             "STATUS_INTERVAL_SECONDS",
             "MODULE_NAME",
             "MODULE_VERSION",
-            "JASPER_OUTPUT_DIRECTORY"
+            "JASPER_OUTPUT_DIRECTORY",
+            "REST_API_PORT",
+            "REST_API_ENABLED"
         };
         
         String[] propertyKeys = {
@@ -174,7 +200,9 @@ public class Application {
             "status.interval.seconds",
             "module.name",
             "module.version",
-            "jasper.output.directory"
+            "jasper.output.directory",
+            "rest.api.port",
+            "rest.api.enabled"
         };
         
         for (int i = 0; i < envVars.length; i++) {
@@ -191,6 +219,10 @@ public class Application {
      */
     public void close() {
         try {
+            if (restApiServer != null) {
+                restApiServer.stop();
+                logger.info("REST API server stopped");
+            }
             if (uploadConsumer != null) {
                 uploadConsumer.close();
                 logger.info("Upload consumer closed");

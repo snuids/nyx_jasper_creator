@@ -37,10 +37,12 @@ ENV ACTIVEMQ_BROKER_URL=tcp://localhost:61616 \
     STATUS_INTERVAL_SECONDS=5 \
     MODULE_NAME=NYX_Jasper_Creator \
     MODULE_VERSION=1.0.0 \
-    JASPER_OUTPUT_DIRECTORY=reports
+    JASPER_OUTPUT_DIRECTORY=reports \
+    REST_API_ENABLED=true \
+    REST_API_PORT=8080
 
-# Expose any ports if needed (optional)
-# EXPOSE 8080
+# Expose REST API port
+EXPOSE 8080
 
 # Set the entrypoint
 ENTRYPOINT ["java", "-jar", "/app/nyx-jasper-creator.jar"]
