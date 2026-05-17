@@ -124,22 +124,66 @@ public class Application {
     }
 
     /**
-     * Load configuration from properties file
+     * Load configuration from environment variables or properties file
+     * Environment variables take precedence over properties file
      */
     private Properties loadConfiguration() throws IOException {
         Properties properties = new Properties();
         
+        // First, try to load from properties file
         try (InputStream input = getClass().getClassLoader()
                 .getResourceAsStream("application.properties")) {
             if (input != null) {
                 properties.load(input);
                 logger.info("Configuration loaded from application.properties");
             } else {
-                logger.warn("application.properties not found, using default values");
+                logger.warn("application.properties not found, using defaults and environment variables");
             }
         }
         
+        // Override with environment variables if present
+        overrideWithEnvironmentVariables(properties);
+        
         return properties;
+    }
+
+    /**
+     * Override properties with environment variables
+     */
+    private void overrideWithEnvironmentVariables(Properties properties) {
+        String[] envVars = {
+            "ACTIVEMQ_BROKER_URL",
+            "ACTIVEMQ_USERNAME",
+            "ACTIVEMQ_PASSWORD",
+            "ACTIVEMQ_QUEUE_NAME",
+            "ACTIVEMQ_UPLOAD_QUEUE_NAME",
+            "ACTIVEMQ_STATUS_TOPIC",
+            "STATUS_INTERVAL_SECONDS",
+            "MODULE_NAME",
+            "MODULE_VERSION",
+            "JASPER_OUTPUT_DIRECTORY"
+        };
+        
+        String[] propertyKeys = {
+            "activemq.broker.url",
+            "activemq.username",
+            "activemq.password",
+            "activemq.queue.name",
+            "activemq.upload.queue.name",
+            "activemq.status.topic",
+            "status.interval.seconds",
+            "module.name",
+            "module.version",
+            "jasper.output.directory"
+        };
+        
+        for (int i = 0; i < envVars.length; i++) {
+            String envValue = System.getenv(envVars[i]);
+            if (envValue != null && !envValue.trim().isEmpty()) {
+                properties.setProperty(propertyKeys[i], envValue);
+                logger.info("Using environment variable {} for {}", envVars[i], propertyKeys[i]);
+            }
+        }
     }
 
     /**

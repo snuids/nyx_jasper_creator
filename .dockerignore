@@ -1,0 +1,45 @@
+# Maven build artifacts
+target/
+*.class
+*.jar
+*.war
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+TEMPLATE_GUIDE.md
+*.md
+
+# Sample files
+sample_*.json
+
+# Reports and generated files
+reports/
+jasperdef/
+
+# Test files
+src/test/
+
+# Docker files (don't copy into build context)
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Logs
+*.log
+
+# Misc
+.env
