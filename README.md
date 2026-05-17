@@ -15,6 +15,7 @@ A Maven-based Java application that connects to ActiveMQ and listens to a specif
 - **Tracks message statistics (sent, received, errors)**
 - **JSON-formatted status messages with module health information**
 - **Template upload via JASPER_UPLOAD queue (base64-encoded JRXML)**
+- **REST API for report generation** (alternative to ActiveMQ queue)
 - Graceful shutdown handling
 - Comprehensive logging with Logback
 - Externalized configuration via properties file or environment variables
@@ -301,4 +302,117 @@ To create reports that iterate over dynamic data from external APIs, include a `
   {"name": "Product A", "value": "1250.00", "status": "Active"},
   {"name": "Product B", "value": "890.50", "status": "Active"}
 ]
+```
+
+**Corresponding JRXML fields:**
+```xml
+<field name="name" class="java.lang.String">
+    <fieldDescription><![CDATA[name]]></fieldDescription>
+</field>
+<field name="value" class="java.lang.String">
+    <fieldDescription><![CDATA[value]]></fieldDescription>
+</field>
+```
+
+See [json_datasource_report.jrxml](src/main/resources/templates/json_datasource_report.jrxml) for a complete example and [sample_message_with_datasource.json](sample_message_with_datasource.json) for a working message.
+
+## Using the REST API
+
+The application provides a REST API as an alternative to the ActiveMQ queue for generating reports.
+
+**Generate a report via REST API:**
+
+```bash
+curl -X POST http://localhost:8080/api/v1/generate-report \
+  -H "Content-Type: application/json" \
+  -d '{
+    "template": "templates/report_template.jrxml",
+    "parameters": {
+      "REPORT_TITLE": "Test Report",
+      "CUSTOMER_NAME": "Jane Smith"
+    }
+  }'
+```
+
+**Available endpoints:**
+- `POST /api/v1/generate-report` - Generate a report (same message format as queue)
+- `GET /api/v1/status` - Get application status and statistics
+- `GET /health` - Health check endpoint
+
+**Configuration:**
+```properties
+rest.api.enabled=true
+rest.api.port=8080
+```
+
+Or via environment variables:
+```bash
+export REST_API_ENABLED=true
+export REST_API_PORT=8080
+```
+
+See [REST_API.md](REST_API.md) for complete REST API documentation with examples.
+
+## Customizing Message Processing
+
+To customize how messages are processed, modify the `processMessage()` method in `QueueMessageListener.java`:
+
+```java
+private void processMessage(String messageText) {
+    // Add your custom logic here
+    // For example: parse JSON, generate reports, call APIs, etc.
+}
+```
+
+## Logs
+
+Logs are written to:
+- Console (stdout)
+- File: `logs/nyx-jasper-creator.log`
+
+Log files are rotated daily and retained for 30 days.
+
+## Dependencies
+
+- Apache ActiveMQ Client 5.18.3
+- JasperReports 6.21.2 (PDF report generation)
+- Jackson Databind 2.16.1 (JSON serialization)
+- SLF4J 2.0.9
+- Logback 1.4.14
+
+## Troubleshooting
+
+### Connection refused
+- Ensure ActiveMQ broker is running
+- Check the broker URL in `application.properties`
+- Verify firewall settings
+
+### Authentication failure
+- Verify username and password in `application.properties`
+- Check ActiveMQ broker user configuration
+
+## CI/CD - Automated Docker Builds
+
+This project includes a GitHub Actions workflow that automatically builds and publishes Docker images to DockerHub.
+
+**Automatic builds trigger on:**
+- Push to `main`/`master` branch → tagged as `latest`
+- Creating version tags (e.g., `v1.0.0`) → tagged with version numbers
+- Pull requests → build only (no push)
+
+**Multi-architecture support:**
+- `linux/amd64` (x86_64)
+- `linux/arm64` (Apple Silicon, ARM servers)
+
+**Setup instructions:** See [.github/DOCKER_PUBLISH.md](.github/DOCKER_PUBLISH.md) for configuring DockerHub credentials and creating releases.
+
+**Pull the image:**
+```bash
+docker pull yourname/nyx-jasper-creator:latest
+docker pull yourname/nyx-jasper-creator:v1.0.0
+```
+
+## License
+
+See LICENSE file for details.
 A jasper report creator listening to ActiveMQ
