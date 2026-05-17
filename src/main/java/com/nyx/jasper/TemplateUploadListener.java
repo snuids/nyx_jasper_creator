@@ -9,7 +9,6 @@ import javax.jms.BytesMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -55,7 +54,7 @@ public class TemplateUploadListener implements MessageListener {
             String filename = message.getStringProperty("file");
             if (filename == null || filename.trim().isEmpty()) {
                 logger.error("No filename found in message headers");
-                statusMessage.incrementErrors();
+                statusMessage.setInternalerrors(statusMessage.getInternalerrors() + 1);
                 message.acknowledge();
                 return;
             }
@@ -65,7 +64,7 @@ public class TemplateUploadListener implements MessageListener {
             String login = extractLogin(userJson);
             if (login == null) {
                 logger.error("Failed to extract login from user header");
-                statusMessage.incrementErrors();
+                statusMessage.setInternalerrors(statusMessage.getInternalerrors() + 1);
                 message.acknowledge();
                 return;
             }
@@ -76,7 +75,7 @@ public class TemplateUploadListener implements MessageListener {
             String base64Content = extractMessageBody(message);
             if (base64Content == null) {
                 logger.error("Failed to extract message body");
-                statusMessage.incrementErrors();
+                statusMessage.setInternalerrors(statusMessage.getInternalerrors() + 1);
                 message.acknowledge();
                 return;
             }
@@ -95,7 +94,7 @@ public class TemplateUploadListener implements MessageListener {
 
         } catch (Exception e) {
             logger.error("Error processing template upload message", e);
-            statusMessage.incrementErrors();
+            statusMessage.setInternalerrors(statusMessage.getInternalerrors() + 1);
             try {
                 message.acknowledge();
             } catch (Exception ackEx) {
@@ -113,24 +112,17 @@ public class TemplateUploadListener implements MessageListener {
         }
         
         try {
-            JsonNode userNode = objectMapper.readT/{login} folder
-     */
-    private void saveTemplate(String login, String filename, String base64Content) throws IOException {
-        // Remove any whitespace/newlines from base64 string
-        String cleanBase64 = base64Content.replaceAll("\\s+", "");
-        
-        // Decode base64
-        byte[] decodedBytes = Base64.getDecoder().decode(cleanBase64);
-        
-        // Create user-specific directory
-        Path userDir = Paths.get(JASPER_DEF_FOLDER, login);
-        if (!Files.exists(userDir)) {
-            Files.createDirectories(userDir);
-            logger.info("Created directory: {}", userDir.toAbsolutePath());
+            JsonNode userNode = objectMapper.readTree(userJson);
+            JsonNode loginNode = userNode.get("login");
+            if (loginNode != null) {
+                return loginNode.asText();
+            }
+        } catch (Exception e) {
+            logger.error("Failed to parse user JSON", e);
         }
         
-        // Save to jasperdef/{login} folder
-        Path outputPath = userDir.resolve(
+        return null;
+    }
 
     /**
      * Extract message body as string
@@ -151,17 +143,24 @@ public class TemplateUploadListener implements MessageListener {
     }
 
     /**
-     * Decode base64 content and save to jasperdef folder
+     * Decode base64 content and save to jasperdef/{login} folder
      */
-    private void saveTemplate(String filename, String base64Content) throws IOException {
+    private void saveTemplate(String login, String filename, String base64Content) throws IOException {
         // Remove any whitespace/newlines from base64 string
         String cleanBase64 = base64Content.replaceAll("\\s+", "");
         
         // Decode base64
         byte[] decodedBytes = Base64.getDecoder().decode(cleanBase64);
         
-        // Save to jasperdef folder
-        Path outputPath = Paths.get(JASPER_DEF_FOLDER, filename);
+        // Create user-specific directory
+        Path userDir = Paths.get(JASPER_DEF_FOLDER, login);
+        if (!Files.exists(userDir)) {
+            Files.createDirectories(userDir);
+            logger.info("Created directory: {}", userDir.toAbsolutePath());
+        }
+        
+        // Save to jasperdef/{login} folder
+        Path outputPath = userDir.resolve(filename);
         
         try (FileOutputStream fos = new FileOutputStream(outputPath.toFile())) {
             fos.write(decodedBytes);
