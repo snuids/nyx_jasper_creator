@@ -78,7 +78,7 @@ public class JasperReportGenerator {
      * @throws JRException if report generation fails
      */
     public String generateReport(String messageData) throws JRException {
-        return generateReport(messageData, null);
+        return generateReport(messageData, null, null, null);
     }
 
     /**
@@ -90,7 +90,7 @@ public class JasperReportGenerator {
      * @throws JRException if report generation fails
      */
     public String generateReport(String messageData, Map<String, Object> additionalParams) throws JRException {
-        return generateReport(messageData, additionalParams, null);
+        return generateReport(messageData, additionalParams, null, null);
     }
 
     /**
@@ -99,10 +99,11 @@ public class JasperReportGenerator {
      * @param messageData The message data to use in the report
      * @param additionalParams Additional parameters for the report
      * @param jsonUrl URL to fetch JSON data for datasource (optional)
+     * @param outputName Custom output name for the PDF file (optional)
      * @return The path to the generated PDF file
      * @throws JRException if report generation fails
      */
-    public String generateReport(String messageData, Map<String, Object> additionalParams, String jsonUrl) throws JRException {
+    public String generateReport(String messageData, Map<String, Object> additionalParams, String jsonUrl, String outputName) throws JRException {
         logger.info("Generating report from message data");
         
         // Prepare parameters
@@ -134,8 +135,15 @@ public class JasperReportGenerator {
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
         
         // Generate output filename with timestamp
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS").format(new Date());
-        String outputFileName = String.format("report_%s.pdf", timestamp);
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String baseName = (outputName != null && !outputName.trim().isEmpty()) ? outputName.trim() : "report";
+        
+        // Remove .pdf extension if already present in outputName
+        if (baseName.toLowerCase().endsWith(".pdf")) {
+            baseName = baseName.substring(0, baseName.length() - 4);
+        }
+        
+        String outputFileName = String.format("%s_%s.pdf", baseName, timestamp);
         String outputPath = Paths.get(outputDirectory, outputFileName).toString();
         
         // Export to PDF

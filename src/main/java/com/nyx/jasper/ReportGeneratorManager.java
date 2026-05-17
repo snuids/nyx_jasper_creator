@@ -68,7 +68,12 @@ public class ReportGeneratorManager {
             logger.info("JSON datasource URL provided: {}", jsonUrl);
         }
         
-        return generator.generateReport(messageDataStr, messageData.getParameters(), jsonUrl);
+        String outputName = messageData.getOutputName();
+        if (outputName != null && !outputName.trim().isEmpty()) {
+            logger.info("Custom output name provided: {}", outputName);
+        }
+        
+        return generator.generateReport(messageDataStr, messageData.getParameters(), jsonUrl, outputName);
     }
 
     /**
