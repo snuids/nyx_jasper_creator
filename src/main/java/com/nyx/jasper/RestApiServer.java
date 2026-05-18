@@ -66,7 +66,7 @@ public class RestApiServer {
             if (requestBody == null || requestBody.trim().isEmpty()) {
                 ctx.status(400).json(java.util.Map.of(
                     "error", "Request body is required",
-                    "message", "Please provide a JSON message with template, parameters, and optionally jsonUrl"
+                    "message", "Please provide a JSON message with template and parameters. Parameters can be object {\"key\":\"value\"} or array [{\"name\":\"key\",\"value\":\"val\"}]"
                 ));
                 return;
             }
@@ -116,10 +116,12 @@ public class RestApiServer {
             logger.info("Report generated successfully via REST API: {}", reportPath);
 
         } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
-            logger.error("Failed to parse JSON request", e);
+            String requestBody = ctx.body();
+            logger.error("Failed to parse JSON request. Request body: {}", requestBody, e);
+            
             ctx.status(400).json(java.util.Map.of(
                 "error", "Invalid JSON",
-                "message", e.getMessage()
+                "message", e.getMessage() != null ? e.getMessage() : "Failed to parse JSON request"
             ));
             statusMessage.setInternalerrors(statusMessage.getInternalerrors() + 1);
             
