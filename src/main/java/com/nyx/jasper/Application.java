@@ -13,6 +13,7 @@ import java.util.Properties;
  * Main application that connects to ActiveMQ and listens to a queue
  */
 public class Application {
+    public static final String Version = "1.0.3";
 
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
     
@@ -55,7 +56,7 @@ public class Application {
         String statusTopicName = config.getProperty("activemq.status.topic", "RPN_MODULE_INFO");
         int statusIntervalSeconds = Integer.parseInt(config.getProperty("status.interval.seconds", "5"));
         String moduleName = config.getProperty("module.name", "nyx_jasper_creator");
-        String moduleVersion = config.getProperty("module.version", "1.0.0");
+        String moduleVersion = Application.Version;
         String outputDirectory = config.getProperty("jasper.output.directory", "reports");
         int restApiPort = Integer.parseInt(config.getProperty("rest.api.port", "8080"));
         boolean restApiEnabled = Boolean.parseBoolean(config.getProperty("rest.api.enabled", "true"));
@@ -184,7 +185,6 @@ public class Application {
             "ACTIVEMQ_STATUS_TOPIC",
             "STATUS_INTERVAL_SECONDS",
             "MODULE_NAME",
-            "MODULE_VERSION",
             "JASPER_OUTPUT_DIRECTORY",
             "REST_API_PORT",
             "REST_API_ENABLED"
@@ -199,12 +199,12 @@ public class Application {
             "activemq.status.topic",
             "status.interval.seconds",
             "module.name",
-            "module.version",
             "jasper.output.directory",
             "rest.api.port",
             "rest.api.enabled"
         };
-        
+                
+
         for (int i = 0; i < envVars.length; i++) {
             String envValue = System.getenv(envVars[i]);
             if (envValue != null && !envValue.trim().isEmpty()) {
