@@ -65,7 +65,7 @@ public class StatusPublisher {
         this.statusMessage.setType("lifesign");
         this.statusMessage.setEventtype("lifesign");
         this.statusMessage.setModule(moduleName);
-        this.statusMessage.setVersion(version);
+        this.statusMessage.setVersion(Application.Version);
         this.statusMessage.setAlive(1);
         this.statusMessage.setErrors(0);
         this.statusMessage.setInternalerrors(0);
