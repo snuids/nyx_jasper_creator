@@ -13,7 +13,7 @@ import java.util.Properties;
  * Main application that connects to ActiveMQ and listens to a queue
  */
 public class Application {
-    public static final String Version = "1.0.3";
+    public static final String Version = "1.0.4";
 
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
     
