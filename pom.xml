@@ -87,6 +87,27 @@
             <version>${jasperreports.version}</version>
         </dependency>
 
+        <!-- JasperReports Chart Themes Extension -->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-chart-themes</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+
+        <!-- JasperReports Functions Extension -->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-functions</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+
+        <!-- JasperReports Barcode4J Extension -->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-barcode4j</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+
         <!-- Javalin for REST API -->
         <dependency>
             <groupId>io.javalin</groupId>
