@@ -135,7 +135,7 @@ public class JasperReportGenerator {
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
         
         // Generate output filename with timestamp
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        //String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String baseName = (outputName != null && !outputName.trim().isEmpty()) ? outputName.trim() : "report";
         
         // Remove .pdf extension if already present in outputName
@@ -143,7 +143,7 @@ public class JasperReportGenerator {
             baseName = baseName.substring(0, baseName.length() - 4);
         }
         
-        String outputFileName = String.format("%s_%s.pdf", baseName, timestamp);
+        String outputFileName = String.format("%s.pdf", baseName);
         String outputPath = Paths.get(outputDirectory, outputFileName).toString();
         
         // Export to PDF
