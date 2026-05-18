@@ -17,7 +17,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Create runtime image
-FROM eclipse-temurin:11-jre
+FROM eclipse-temurin:11-jdk
 
 WORKDIR /app
 
