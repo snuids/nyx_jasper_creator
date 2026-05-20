@@ -1,0 +1,26 @@
+{
+  "token": "0dda1ade-a3f6-43ff-bb7a-2af106a4c763",
+  "template": "./jasperdef/amarchand/TestPostGres.jrxml",
+  "parameters": [
+    {
+      "name": "param1",
+      "title": "param1",
+      "type": "text",
+      "value": "TEST PARAM"
+    },
+    {
+      "name": "param2",
+      "title": "param2",
+      "type": "interval",
+      "value": [
+        "2026-04-19T22:00:00.000Z",
+        "2026-05-19T22:00:00.000Z"
+      ]
+    }
+  ],
+  "outputName": "id_20060583_32159353",
+  "jdbc_driver": "org.postgresql.Driver",
+  "jdbc_url": "jdbc:postgresql://energy.marmar.ovh:5432/nyx",
+  "jdbc_login": "postgres",
+  "jdbc_password": "ComplexPass012!"
+}

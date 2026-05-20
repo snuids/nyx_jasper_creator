@@ -1,0 +1,23 @@
+{
+  "token": "sample-token-sqlserver",
+  "template": "./jasperdef/amarchand/DatabaseReport.jrxml",
+  "parameters": [
+    {
+      "name": "startDate",
+      "title": "Start Date",
+      "type": "date",
+      "value": "2026-04-19T22:00:00.000Z"
+    },
+    {
+      "name": "endDate",
+      "title": "End Date",
+      "type": "date",
+      "value": "2026-05-19T22:00:00.000Z"
+    }
+  ],
+  "outputName": "sqlserver_report",
+  "jdbc_driver": "com.microsoft.sqlserver.jdbc.SQLServerDriver",
+  "jdbc_url": "jdbc:sqlserver://hostname:1433;databaseName=dbname",
+  "jdbc_login": "username",
+  "jdbc_password": "password"
+}
