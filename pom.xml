@@ -108,6 +108,27 @@
             <version>7.0.0</version>
         </dependency>
 
+        <!-- Barcode4J Core (required for barcode generation) -->
+        <dependency>
+            <groupId>net.sf.barcode4j</groupId>
+            <artifactId>barcode4j</artifactId>
+            <version>2.1</version>
+        </dependency>
+
+        <!-- Avalon Framework (required by Barcode4J) -->
+        <dependency>
+            <groupId>org.apache.avalon.framework</groupId>
+            <artifactId>avalon-framework-api</artifactId>
+            <version>4.3.1</version>
+        </dependency>
+
+        <!-- ZXing for QR Code support -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.5.3</version>
+        </dependency>
+
         <!-- Javalin for REST API -->
         <dependency>
             <groupId>io.javalin</groupId>
