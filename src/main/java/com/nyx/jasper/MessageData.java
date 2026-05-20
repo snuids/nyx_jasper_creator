@@ -25,6 +25,18 @@ public class MessageData {
     
     @JsonProperty("jsonUrl")
     private String jsonUrl;
+    
+    @JsonProperty("jdbc_driver")
+    private String jdbcDriver;
+    
+    @JsonProperty("jdbc_url")
+    private String jdbcUrl;
+    
+    @JsonProperty("jdbc_login")
+    private String jdbcLogin;
+    
+    @JsonProperty("jdbc_password")
+    private String jdbcPassword;
 
     public MessageData() {
     }
@@ -102,6 +114,38 @@ public class MessageData {
         this.jsonUrl = jsonUrl;
     }
 
+    public String getJdbcDriver() {
+        return jdbcDriver;
+    }
+
+    public void setJdbcDriver(String jdbcDriver) {
+        this.jdbcDriver = jdbcDriver;
+    }
+
+    public String getJdbcUrl() {
+        return jdbcUrl;
+    }
+
+    public void setJdbcUrl(String jdbcUrl) {
+        this.jdbcUrl = jdbcUrl;
+    }
+
+    public String getJdbcLogin() {
+        return jdbcLogin;
+    }
+
+    public void setJdbcLogin(String jdbcLogin) {
+        this.jdbcLogin = jdbcLogin;
+    }
+
+    public String getJdbcPassword() {
+        return jdbcPassword;
+    }
+
+    public void setJdbcPassword(String jdbcPassword) {
+        this.jdbcPassword = jdbcPassword;
+    }
+
     @Override
     public String toString() {
         return "MessageData{" +
@@ -109,6 +153,10 @@ public class MessageData {
                 ", parameters=" + parameters +
                 ", outputName='" + outputName + '\'' +
                 ", jsonUrl='" + jsonUrl + '\'' +
+                ", jdbcDriver='" + jdbcDriver + '\'' +
+                ", jdbcUrl='" + jdbcUrl + '\'' +
+                ", jdbcLogin='" + jdbcLogin + '\'' +
+                ", jdbcPassword='***'" +
                 '}';
     }
 }
