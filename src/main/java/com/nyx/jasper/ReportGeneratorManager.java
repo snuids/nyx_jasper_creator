@@ -73,6 +73,18 @@ public class ReportGeneratorManager {
             logger.info("Custom output name provided: {}", outputName);
         }
         
+        // Get JDBC connection parameters if provided
+        String jdbcDriver = messageData.getJdbcDriver();
+        String jdbcUrl = messageData.getJdbcUrl();
+        String jdbcLogin = messageData.getJdbcLogin();
+        String jdbcPassword = messageData.getJdbcPassword();
+        
+        if (jdbcUrl != null && !jdbcUrl.trim().isEmpty()) {
+            logger.info("JDBC connection parameters provided. Driver: {}, URL: {}", jdbcDriver, jdbcUrl);
+            return generator.generateReportWithJdbc(messageDataStr, messageData.getParameters(), 
+                jdbcDriver, jdbcUrl, jdbcLogin, jdbcPassword, outputName);
+        }
+        
         return generator.generateReport(messageDataStr, messageData.getParameters(), jsonUrl, outputName);
     }
 

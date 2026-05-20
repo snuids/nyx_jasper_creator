@@ -8,6 +8,9 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -151,6 +154,88 @@ public class JasperReportGenerator {
         
         logger.info("Report generated successfully: {}", outputPath);
         return outputPath;
+    }
+
+    /**
+     * Generate a PDF report with JDBC database connection
+     * 
+     * @param messageData The message data to use in the report
+     * @param additionalParams Additional parameters for the report
+     * @param jdbcDriver JDBC driver class name
+     * @param jdbcUrl JDBC connection URL
+     * @param jdbcLogin Database username
+     * @param jdbcPassword Database password
+     * @param outputName Custom output name for the PDF file (optional)
+     * @return The path to the generated PDF file
+     * @throws JRException if report generation fails
+     */
+    public String generateReportWithJdbc(String messageData, Map<String, Object> additionalParams, 
+                                          String jdbcDriver, String jdbcUrl, String jdbcLogin, 
+                                          String jdbcPassword, String outputName) throws JRException {
+        logger.info("Generating report with JDBC connection");
+        
+        Connection connection = null;
+        try {
+            // Load JDBC driver
+            if (jdbcDriver != null && !jdbcDriver.trim().isEmpty()) {
+                try {
+                    Class.forName(jdbcDriver);
+                    logger.info("JDBC driver loaded: {}", jdbcDriver);
+                } catch (ClassNotFoundException e) {
+                    logger.error("JDBC driver not found: {}", jdbcDriver, e);
+                    throw new JRException("JDBC driver not found: " + jdbcDriver, e);
+                }
+            }
+            
+            // Establish database connection
+            logger.info("Connecting to database: {}", jdbcUrl);
+            connection = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
+            logger.info("Database connection established successfully");
+            
+            // Prepare parameters
+            Map<String, Object> parameters = new HashMap<>();
+            if (additionalParams != null) {
+                parameters.putAll(additionalParams);
+            }
+            
+            // Add message data to parameters
+            parameters.put("MESSAGE_DATA", messageData);
+            parameters.put("GENERATION_TIME", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            
+            // Fill the report with JDBC connection
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection);
+            
+            // Generate output filename
+            String baseName = (outputName != null && !outputName.trim().isEmpty()) ? outputName.trim() : "report";
+            
+            // Remove .pdf extension if already present in outputName
+            if (baseName.toLowerCase().endsWith(".pdf")) {
+                baseName = baseName.substring(0, baseName.length() - 4);
+            }
+            
+            String outputFileName = String.format("%s.pdf", baseName);
+            String outputPath = Paths.get(outputDirectory, outputFileName).toString();
+            
+            // Export to PDF
+            JasperExportManager.exportReportToPdfFile(jasperPrint, outputPath);
+            
+            logger.info("Report generated successfully: {}", outputPath);
+            return outputPath;
+            
+        } catch (SQLException e) {
+            logger.error("Database connection error", e);
+            throw new JRException("Failed to connect to database: " + e.getMessage(), e);
+        } finally {
+            // Close database connection
+            if (connection != null) {
+                try {
+                    connection.close();
+                    logger.info("Database connection closed");
+                } catch (SQLException e) {
+                    logger.warn("Error closing database connection", e);
+                }
+            }
+        }
     }
 
     /**
