@@ -1,0 +1,23 @@
+{
+  "token": "sample-token-oracle",
+  "template": "./jasperdef/amarchand/DatabaseReport.jrxml",
+  "parameters": [
+    {
+      "name": "startDate",
+      "title": "Start Date",
+      "type": "date",
+      "value": "2026-04-19T22:00:00.000Z"
+    },
+    {
+      "name": "endDate",
+      "title": "End Date",
+      "type": "date",
+      "value": "2026-05-19T22:00:00.000Z"
+    }
+  ],
+  "outputName": "oracle_report",
+  "jdbc_driver": "oracle.jdbc.OracleDriver",
+  "jdbc_url": "jdbc:oracle:thin:@hostname:1521:sid",
+  "jdbc_login": "username",
+  "jdbc_password": "password"
+}
