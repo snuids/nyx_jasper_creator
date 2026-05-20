@@ -129,6 +129,23 @@
             <version>3.5.3</version>
         </dependency>
 
+        <!-- Apache Batik for SVG rendering (required by Barcode4J) -->
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-bridge</artifactId>
+            <version>1.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-svggen</artifactId>
+            <version>1.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-dom</artifactId>
+            <version>1.17</version>
+        </dependency>
+
         <!-- Javalin for REST API -->
         <dependency>
             <groupId>io.javalin</groupId>
