@@ -109,8 +109,8 @@ public class RestApiServer {
             ctx.status(200).json(java.util.Map.of(
                 "success", true,
                 "message", "Report generated successfully",
-                "reportPath", reportPath,
-                "template", messageData.getTemplatePath()
+                "reportPath", reportPath != null ? reportPath : "unknown",
+                "template", messageData.getTemplatePath() != null ? messageData.getTemplatePath() : "unknown"
             ));
 
             logger.info("Report generated successfully via REST API: {}", reportPath);
@@ -129,7 +129,7 @@ public class RestApiServer {
             logger.error("Failed to generate report via REST API", e);
             ctx.status(500).json(java.util.Map.of(
                 "error", "Report generation failed",
-                "message", e.getMessage()
+                "message", e.getMessage() != null ? e.getMessage() : "An error occurred during report generation"
             ));
             statusMessage.setInternalerrors(statusMessage.getInternalerrors() + 1);
         }

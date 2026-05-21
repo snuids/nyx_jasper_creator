@@ -16,11 +16,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <activemq.version>5.18.3</activemq.version>
+        <activemq.version>5.19.6</activemq.version>
         <slf4j.version>2.0.9</slf4j.version>
         <logback.version>1.4.14</logback.version>
-        <jackson.version>2.17.2</jackson.version>
-        <jasperreports.version>7.0.1</jasperreports.version>
+        <jackson.version>2.18.2</jackson.version>
+        <jasperreports.version>7.0.3</jasperreports.version>
     </properties>
 
     <dependencies>
@@ -105,7 +105,7 @@
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-barcode4j</artifactId>
-            <version>7.0.0</version>
+            <version>${jasperreports.version}</version>
         </dependency>
 
         <!-- Barcode4J Core with dependencies (required for barcode generation) -->
@@ -165,7 +165,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.2</version>
+            <version>42.7.7</version>
         </dependency>
 
         <!-- Oracle JDBC Driver -->
@@ -179,7 +179,7 @@
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>12.6.1.jre11</version>
+            <version>12.10.0.jre11</version>
         </dependency>
 
         <!-- JUnit for testing -->
