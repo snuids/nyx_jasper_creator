@@ -3,6 +3,8 @@ package com.nyx.jasper;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,8 +82,17 @@ public class MessageData {
                     Map<?, ?> itemMap = (Map<?, ?>) item;
                     Object name = itemMap.get("name");
                     Object value = itemMap.get("value");
-                    
-                    if (name != null) {
+                    Object type = itemMap.get("type");
+
+                    if (name != null && "interval".equals(type) && value instanceof List) {
+                        List<?> interval = (List<?>) value;
+                        Object startVal = interval.size() > 0 ? interval.get(0) : null;
+                        Object endVal   = interval.size() > 1 ? interval.get(1) : null;
+                        this.parameters.put(name + "_start", startVal);
+                        this.parameters.put(name + "_end",   endVal);
+                        this.parameters.put(name + "_startDT", toDate(startVal));
+                        this.parameters.put(name + "_endDT",   toDate(endVal));
+                    } else if (name != null) {
                         this.parameters.put(name.toString(), value);
                     }
                 }
@@ -96,6 +107,15 @@ public class MessageData {
      */
     public void setParameters(Map<String, Object> parameters) {
         this.parameters = parameters;
+    }
+
+    private Date toDate(Object value) {
+        if (value == null) return null;
+        try {
+            return Date.from(Instant.parse(value.toString()));
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public String getOutputName() {
