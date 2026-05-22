@@ -1,6 +1,6 @@
 # Multi-stage build for NYX Jasper Creator
 # Stage 1: Build the application
-FROM maven:3.9-eclipse-temurin-11 AS builder
+FROM maven:3.9-eclipse-temurin-17 AS builder
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Create runtime image
-FROM eclipse-temurin:11-jdk
+FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
 
