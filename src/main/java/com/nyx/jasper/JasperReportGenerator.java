@@ -118,6 +118,8 @@ public class JasperReportGenerator {
         // Add message data to parameters
         parameters.put("MESSAGE_DATA", messageData);
         parameters.put("GENERATION_TIME", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        // Set subreport directory so subreport expressions like $P{SUBREPORT_DIR}+"Sub.jasper" resolve correctly
+        parameters.putIfAbsent("SUBREPORT_DIR", computeSubreportDir());
         
         // Create datasource
         JRDataSource dataSource;
@@ -201,6 +203,8 @@ public class JasperReportGenerator {
             // Add message data to parameters
             parameters.put("MESSAGE_DATA", messageData);
             parameters.put("GENERATION_TIME", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            // Set subreport directory so subreport expressions like $P{SUBREPORT_DIR}+"Sub.jasper" resolve correctly
+            parameters.putIfAbsent("SUBREPORT_DIR", computeSubreportDir());
             
             // Fill the report with JDBC connection
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection);
@@ -245,6 +249,14 @@ public class JasperReportGenerator {
     public void reloadTemplate() throws JRException, IOException {
         logger.info("Reloading JRXML template");
         compileTemplate();
+    }
+
+    /**
+     * Compute the parent directory of the JRXML file with a trailing separator,
+     * used to resolve subreport paths at fill time.
+     */
+    private String computeSubreportDir() {
+        return new File(jrxmlPath).getAbsoluteFile().getParent() + File.separator;
     }
 
     /**
