@@ -49,8 +49,12 @@ public class Application {
         Properties config = loadConfiguration();
         
         String brokerUrl = config.getProperty("activemq.broker.url", "tcp://localhost:61616");
-        String username = config.getProperty("activemq.username", "admin");
-        String password = config.getProperty("activemq.password", "admin");
+        String username = config.getProperty("activemq.username");
+        String password = config.getProperty("activemq.password");
+        if (username == null || password == null) {
+            throw new IllegalStateException(
+                    "activemq.username and activemq.password must be configured (properties file or environment)");
+        }
         String queueName = config.getProperty("activemq.queue.name", "nyx.jasper.queue");
         String uploadQueueName = config.getProperty("activemq.upload.queue.name", "JASPER_UPLOAD");
         String statusTopicName = config.getProperty("activemq.status.topic", "RPN_MODULE_INFO");

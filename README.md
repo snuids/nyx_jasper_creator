@@ -246,7 +246,7 @@ docker run -d --name activemq \
   apache/activemq-classic:latest
 ```
 
-Access the ActiveMQ Web Console at: http://localhost:8161 (username: admin, password: admin)
+Access the ActiveMQ Web Console at: http://localhost:8161 (use your configured credentials)
 
 ## Testing the Application
 
