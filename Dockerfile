@@ -21,22 +21,25 @@ FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
 
+# curl is used by the container healthcheck
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
 # Create necessary directories
 RUN mkdir -p /app/reports /app/jasperdef
 
 # Copy the built JAR from builder stage
-COPY --from=builder /app/target/nyx-jasper-creator-1.0.0.jar /app/nyx-jasper-creator.jar
+COPY --from=builder /app/target/nyx-jasper-creator-1.0.21.jar /app/nyx-jasper-creator.jar
 
 # Environment variables with default values
 ENV ACTIVEMQ_BROKER_URL=tcp://localhost:61616 \
-    ACTIVEMQ_USERNAME=admin \
-    ACTIVEMQ_PASSWORD=admin \
     ACTIVEMQ_QUEUE_NAME=nyx.jasper.queue \
     ACTIVEMQ_UPLOAD_QUEUE_NAME=JASPER_UPLOAD \
     ACTIVEMQ_STATUS_TOPIC=RPN_MODULE_INFO \
     STATUS_INTERVAL_SECONDS=5 \
     MODULE_NAME=NYX_Jasper_Creator \
-    MODULE_VERSION=1.0.0 \
+    MODULE_VERSION=1.0.21 \
     JASPER_OUTPUT_DIRECTORY=reports \
     REST_API_ENABLED=true \
     REST_API_PORT=8080
@@ -49,4 +52,4 @@ ENTRYPOINT ["java", "-jar", "/app/nyx-jasper-creator.jar"]
 
 # Health check (optional - checks if process is running)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD pgrep -f nyx-jasper-creator.jar || exit 1
+  CMD curl -sf http://localhost:8080/health || exit 1

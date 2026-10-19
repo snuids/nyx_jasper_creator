@@ -37,12 +37,23 @@ public class RestApiServer {
      * Configure REST API routes
      */
     private void setupRoutes() {
-        // Health check endpoint
+        // Health check endpoint: DOWN when the JMS connection is gone
         app.get("/health", ctx -> {
+            int connections = statusMessage != null ? statusMessage.getConnections() : 0;
+            boolean up = statusMessage != null
+                    && statusMessage.getAlive() == 1
+                    && connections > 0;
+            String module = statusMessage != null && statusMessage.getModule() != null
+                    ? statusMessage.getModule() : "unknown";
+            String version = statusMessage != null && statusMessage.getVersion() != null
+                    ? statusMessage.getVersion() : Application.Version;
+
+            ctx.status(up ? 200 : 503);
             ctx.json(java.util.Map.of(
-                "status", "UP",
-                "module", statusMessage.getModule(),
-                "version", statusMessage.getVersion()
+                "status", up ? "UP" : "DOWN",
+                "module", module,
+                "version", version,
+                "connections", connections
             ));
         });
 

@@ -6,7 +6,7 @@
 
     <groupId>com.nyx</groupId>
     <artifactId>nyx-jasper-creator</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.21</version>
     <packaging>jar</packaging>
 
     <name>Nyx Jasper Creator</name>
@@ -84,6 +84,13 @@
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-pdf</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+
+        <!-- JasperReports Charts Extension (bar, pie, line, etc.) -->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-charts</artifactId>
             <version>${jasperreports.version}</version>
         </dependency>
 
