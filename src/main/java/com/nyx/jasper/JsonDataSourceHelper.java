@@ -34,12 +34,12 @@ public class JsonDataSourceHelper {
             throw new IllegalArgumentException("JSON URL cannot be null or empty");
         }
 
-        logger.info("Fetching JSON data from URL: {}", jsonUrl);
+        logger.info("Fetching JSON data from URL: {}", LogSafe.url(jsonUrl));
         
         String jsonData = fetchJsonFromUrl(jsonUrl);
         
         if (jsonData == null || jsonData.trim().isEmpty()) {
-            throw new IOException("No data received from URL: " + jsonUrl);
+            throw new IOException("No data received from URL: " + LogSafe.url(jsonUrl));
         }
         
         logger.info("Successfully fetched JSON data ({} bytes)", jsonData.length());
@@ -70,7 +70,8 @@ public class JsonDataSourceHelper {
             int responseCode = connection.getResponseCode();
             
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                throw new IOException("HTTP error code: " + responseCode + " for URL: " + urlString);
+                throw new IOException("HTTP error code: " + responseCode
+                        + " for URL: " + LogSafe.url(urlString));
             }
             
             // Read the response

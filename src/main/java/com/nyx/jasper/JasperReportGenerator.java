@@ -107,6 +107,7 @@ public class JasperReportGenerator {
      * @throws JRException if report generation fails
      */
     public String generateReport(String messageData, Map<String, Object> additionalParams, String jsonUrl, String outputName) throws JRException {
+        long startedAt = System.currentTimeMillis();
         logger.info("Generating report from message data");
         
         // Prepare parameters
@@ -125,10 +126,11 @@ public class JasperReportGenerator {
         JRDataSource dataSource;
         if (jsonUrl != null && !jsonUrl.trim().isEmpty() && JsonDataSourceHelper.isValidUrl(jsonUrl)) {
             try {
-                logger.info("Creating JSON datasource from URL: {}", jsonUrl);
+                logger.info("Creating JSON datasource from URL: {}", LogSafe.url(jsonUrl));
                 dataSource = JsonDataSourceHelper.createFromUrl(jsonUrl);
             } catch (IOException e) {
-                logger.error("Failed to fetch JSON from URL: {}. Using empty datasource.", jsonUrl, e);
+                logger.error("Failed to fetch JSON from URL: {}. Using empty datasource.",
+                        LogSafe.url(jsonUrl), e);
                 dataSource = new JREmptyDataSource();
             }
         } else {
@@ -154,7 +156,8 @@ public class JasperReportGenerator {
         // Export to PDF
         JasperExportManager.exportReportToPdfFile(jasperPrint, outputPath);
         
-        logger.info("Report generated successfully: {}", outputPath);
+        logger.info("Report generated successfully: {} ({} ms)", outputPath,
+                System.currentTimeMillis() - startedAt);
         return outputPath;
     }
 

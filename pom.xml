@@ -210,6 +210,60 @@
                 </configuration>
             </plugin>
 
+            <!-- The surefire shipped with the super-pom is old enough to miss tests on a modern
+                 JDK: pinned so that `mvn verify` runs the same suite everywhere. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+            </plugin>
+
+            <!-- Coverage, measured on every build and gated. The floor is the level actually
+                 measured on 2026-11-10, not a wish: raise it as tests land, never lower it.
+                 `mvn verify` writes target/site/jacoco/jacoco.xml (for the badge) and fails the
+                 build under it. -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.02</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Maven Shade Plugin to create an executable JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

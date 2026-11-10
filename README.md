@@ -1,5 +1,8 @@
 # Nyx Jasper Creator
 
+![Coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/snuids/nyx_jasper_creator/badges/coverage.json&style=flat-square)
+![CI](https://img.shields.io/github/actions/workflow/status/snuids/nyx_jasper_creator/ci-tests.yml?style=flat-square&label=tests)
+
 A Maven-based Java application that connects to ActiveMQ and listens to a specific queue for message processing.
 
 ## Features
