@@ -199,6 +199,10 @@
     </dependencies>
 
     <build>
+        <!-- The name the Dockerfile copies. Without it the jar carries the version, and every
+             release had to rewrite the `COPY` line of the Dockerfile — which is exactly how the
+             1.0.22 build broke. -->
+        <finalName>nyx-jasper-creator</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

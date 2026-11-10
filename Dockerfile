@@ -30,7 +30,10 @@ RUN apt-get update \
 RUN mkdir -p /app/reports /app/jasperdef
 
 # Copy the built JAR from builder stage
-COPY --from=builder /app/target/nyx-jasper-creator-1.0.21.jar /app/nyx-jasper-creator.jar
+COPY --from=builder /app/target/nyx-jasper-creator.jar /app/nyx-jasper-creator.jar
+
+# Set by the build workflow from `pom.xml`, so the module announces the version it was built from
+ARG VERSION=dev
 
 # Environment variables with default values
 ENV ACTIVEMQ_BROKER_URL=tcp://localhost:61616 \
@@ -39,7 +42,7 @@ ENV ACTIVEMQ_BROKER_URL=tcp://localhost:61616 \
     ACTIVEMQ_STATUS_TOPIC=RPN_MODULE_INFO \
     STATUS_INTERVAL_SECONDS=5 \
     MODULE_NAME=NYX_Jasper_Creator \
-    MODULE_VERSION=1.0.21 \
+    MODULE_VERSION=${VERSION} \
     JASPER_OUTPUT_DIRECTORY=reports \
     REST_API_ENABLED=true \
     REST_API_PORT=8080
