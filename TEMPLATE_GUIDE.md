@@ -47,13 +47,19 @@ JasperReports supports various parameter types. When sending from JSON:
 
 ## Template Location
 
-Templates can be:
+A template reaches the worker in one of three ways:
 
-1. **In the classpath**: Place in `src/main/resources/templates/`
-   - Reference as: `"template": "templates/my_report.jrxml"`
+1. **Through the console** (the normal one): the upload queue writes it to
+   `jasperdef/<login>/<name>.jrxml`, and the message references it as
+   `"template": "./jasperdef/<login>/report.jrxml"`;
+2. **An absolute path**: the file is placed anywhere the container can read
+   (`"template": "/app/jasperdef/reports/report.jrxml"`);
+3. **The classpath**, as a fallback when the path does not exist on disk — but no template ships in
+   the jar, so this is for a build that deliberately embeds one.
 
-2. **Absolute path**: Place anywhere on the filesystem
-   - Reference as: `"template": "/path/to/my_report.jrxml"`
+A template must be saved by **Jaspersoft Studio 7**: the format changed with JasperReports 7, and a
+6.x file (the one with the `xmlns` namespace on `<jasperReport>`) is refused with
+`Unable to load report`.
 
 ## Example Template Structure
 
@@ -97,13 +103,13 @@ Templates can be:
 
 ## Testing Your Template
 
-1. Create your JRXML template
-2. Place it in `src/main/resources/templates/`
+1. Create your JRXML template in Jaspersoft Studio 7
+2. Upload it from the console (Queue `JASPER_UPLOAD`), which writes `jasperdef/<login>/<name>.jrxml`
 3. Send a test message to the queue:
 
 ```json
 {
-  "template": "templates/your_template.jrxml",
+  "template": "./jasperdef/<login>/report.jrxml",
   "parameters": {
     "REPORT_TITLE": "Test Report",
     "CUSTOM_DATA": "This is test data"
@@ -124,4 +130,5 @@ The application caches compiled templates for performance. To reload a template 
 
 - [JasperReports Documentation](https://jasperreports.sourceforge.net/documentation.html)
 - [JRXML Reference](https://jasperreports.sourceforge.net/dtds/jasperreport.dtd)
-- Sample template: [report_template.jrxml](src/main/resources/templates/report_template.jrxml)
+- The template format is the one Jaspersoft Studio 7 writes; see `src/test/resources/simple.jrxml`
+  in the repository for a minimal valid file

@@ -26,7 +26,7 @@ Same format as ActiveMQ queue messages:
 
 ```json
 {
-  "template": "templates/report_template.jrxml",
+  "template": "./jasperdef/<login>/report.jrxml",
   "parameters": {
     "REPORT_TITLE": "Sample Report",
     "CUSTOMER_NAME": "John Doe",
@@ -52,7 +52,7 @@ Same format as ActiveMQ queue messages:
   "success": true,
   "message": "Report generated successfully",
   "reportPath": "reports/report_20260517_103208_194.pdf",
-  "template": "templates/report_template.jrxml"
+  "template": "./jasperdef/<login>/report.jrxml"
 }
 ```
 
@@ -162,7 +162,7 @@ ports:
 curl -X POST http://localhost:8080/api/v1/generate-report \
   -H "Content-Type: application/json" \
   -d '{
-    "template": "templates/report_template.jrxml",
+    "template": "./jasperdef/<login>/report.jrxml",
     "parameters": {
       "REPORT_TITLE": "Test Report",
       "CUSTOMER_NAME": "Jane Smith"
@@ -185,7 +185,7 @@ import requests
 response = requests.post(
     'http://localhost:8080/api/v1/generate-report',
     json={
-        'template': 'templates/report_template.jrxml',
+        'template': './jasperdef/<login>/report.jrxml',
         'parameters': {
             'REPORT_TITLE': 'Test Report',
             'CUSTOMER_NAME': 'Jane Smith'
@@ -206,7 +206,7 @@ fetch('http://localhost:8080/api/v1/generate-report', {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    template: 'templates/report_template.jrxml',
+    template: './jasperdef/<login>/report.jrxml',
     parameters: {
       REPORT_TITLE: 'Test Report',
       CUSTOMER_NAME: 'Jane Smith'

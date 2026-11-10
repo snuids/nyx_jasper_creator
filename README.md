@@ -49,10 +49,7 @@ nyx_jasper_creator/
 │   │   │       └── JsonDataSourceHelper.java     # JSON datasource helper
 │   │   └── resources/
 │   │       ├── application.properties            # Application configuration
-│   │       ├── logback.xml                       # Logging configuration
-│   │       └── templates/
-│   │           ├── report_template.jrxml         # Sample JRXML template
-│   │           └── json_datasource_report.jrxml  # JSON datasource example
+│   │       └── logback.xml                       # Logging configuration
 │   └── test/
 │       └── java/
 ├── pom.xml                                       # Maven configuration
@@ -156,7 +153,7 @@ The application listens to the configured queue for JSON messages that trigger r
 
 ```json
 {
-  "template": "templates/report_template.jrxml",
+  "template": "./jasperdef/<login>/report.jrxml",
   "parameters": {
     "REPORT_TITLE": "Sample Report",
     "CUSTOMER_NAME": "John Doe",
@@ -263,7 +260,7 @@ You can send test messages to the queue using the ActiveMQ Web Console or using 
 **Example test message:**
 ```json
 {
-  "template": "templates/report_template.jrxml",
+  "template": "./jasperdef/<login>/report.jrxml",
   "parameters": {
     "REPORT_TITLE": "Test Report",
     "CUSTOMER_NAME": "Test User"
@@ -284,7 +281,7 @@ To create reports that iterate over dynamic data from external APIs, include a `
 **Example message with JSON datasource:**
 ```json
 {
-  "template": "templates/json_datasource_report.jrxml",
+  "template": "./jasperdef/<login>/report.jrxml",
   "parameters": {
     "REPORT_TITLE": "Product Inventory Report"
   },
@@ -317,7 +314,7 @@ To create reports that iterate over dynamic data from external APIs, include a `
 </field>
 ```
 
-See [json_datasource_report.jrxml](src/main/resources/templates/json_datasource_report.jrxml) for a complete example and [sample_message_with_datasource.json](sample_message_with_datasource.json) for a working message.
+See [sample_message_with_datasource.json](sample_message_with_datasource.json) for a working message. The template itself is the one uploaded from the console under `jasperdef/<login>/`; it must be exported from Jaspersoft Studio 7 (see [TEMPLATE_GUIDE.md](TEMPLATE_GUIDE.md)).
 
 ## Using the REST API
 
@@ -329,7 +326,7 @@ The application provides a REST API as an alternative to the ActiveMQ queue for 
 curl -X POST http://localhost:8080/api/v1/generate-report \
   -H "Content-Type: application/json" \
   -d '{
-    "template": "templates/report_template.jrxml",
+    "template": "./jasperdef/<login>/report.jrxml",
     "parameters": {
       "REPORT_TITLE": "Test Report",
       "CUSTOMER_NAME": "Jane Smith"
@@ -459,5 +456,7 @@ read is always acknowledged (a malformed payload would otherwise be redelivered 
 producer raises the error counter and asks the supervisor to reconnect; an upload lands under
 `jasperdef/<login>/` and a name that tries to walk out of that folder does not.
 
-The example templates in `src/main/resources/templates/` are JasperReports 6 files: JasperReports 7
-refuses them (`Unable to load report`). Copy a template exported from Jaspersoft Studio 7 instead.
+No template ships in the jar: the two examples that used to live in `src/main/resources/templates/`
+were JasperReports 6 files, and JasperReports 7 refuses them (`Unable to load report`). A template
+comes from Jaspersoft Studio 7 and reaches the worker through the upload queue — see
+[TEMPLATE_GUIDE.md](TEMPLATE_GUIDE.md).
