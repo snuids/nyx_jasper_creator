@@ -17,7 +17,7 @@ import java.util.Properties;
  * exiting, recreating the session, consumers and status publisher.
  */
 public class Application {
-    public static final String Version = "1.0.21";
+    public static final String Version = "1.0.22";
 
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
     private static final long RECONNECT_DELAY_MS = 5000L;

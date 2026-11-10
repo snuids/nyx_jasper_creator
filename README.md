@@ -419,3 +419,23 @@ docker pull yourname/nyx-jasper-creator:v1.0.0
 
 See LICENSE file for details.
 A jasper report creator listening to ActiveMQ
+
+## LOGS
+
+The worker logs to stdout (so `docker logs`) and to a rolling file under `logs/` (see
+`src/main/resources/logback.xml`). Credentials never reach either: the datasource URL is passed
+through `LogSafe.url()` before it is logged, which masks `token`, `password`, `passwd`, `secret`,
+`key` and `apikey`.
+
+At startup:
+
+```
+==============================
+Starting: Nyx Jasper Creator
+Module:   1.0.22
+==============================
+```
+
+On a generation: `Generating report from message data`, `Creating JSON datasource from URL:
+https://…/datasource/my_ds2?token=***&flat=true`, then `Report generated successfully:
+reports/x.pdf (812 ms)` — the duration is there to tell a slow datasource from a slow template.
