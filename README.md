@@ -439,3 +439,25 @@ Module:   1.0.22
 On a generation: `Generating report from message data`, `Creating JSON datasource from URL:
 https://…/datasource/my_ds2?token=***&flat=true`, then `Report generated successfully:
 reports/x.pdf (812 ms)` — the duration is there to tell a slow datasource from a slow template.
+
+## TESTS
+
+`mvn verify` compiles, runs the JUnit suite under JaCoCo, writes `target/site/jacoco/` and **fails
+under the coverage floor in `pom.xml`** (90 % of lines; measured 91,9 % over 788 lines, 98 tests).
+The floor is the level actually measured — raise it as tests land, never lower it.
+
+```
+mvn verify                                   # everything the CI runs
+mvn test -Dtest=JasperReportGeneratorTest     # one class while working
+```
+
+What the suite holds, and why: the template is compiled once per template (a `.jrxml` that does not
+compile must fail loudly, not produce an empty PDF); the report path is normalised (`balance.PDF`
+must not become `balance.pdf.pdf`); a datasource that cannot be reached falls back to an empty one
+instead of failing the export; the JDBC path is filled for real through H2; a message whose body was
+read is always acknowledged (a malformed payload would otherwise be redelivered forever); a dead
+producer raises the error counter and asks the supervisor to reconnect; an upload lands under
+`jasperdef/<login>/` and a name that tries to walk out of that folder does not.
+
+The example templates in `src/main/resources/templates/` are JasperReports 6 files: JasperReports 7
+refuses them (`Unable to load report`). Copy a template exported from Jaspersoft Studio 7 instead.
