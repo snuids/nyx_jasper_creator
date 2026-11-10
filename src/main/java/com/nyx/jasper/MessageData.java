@@ -20,7 +20,9 @@ public class MessageData {
     @JsonProperty("template")
     private String templatePath;
     
-    private Map<String, Object> parameters;
+    // never null: a message may carry no parameter block at all, and every caller treats the map
+    // as something it can read
+    private Map<String, Object> parameters = new HashMap<>();
     
     @JsonProperty("outputName")
     private String outputName;
@@ -172,7 +174,7 @@ public class MessageData {
                 "templatePath='" + templatePath + '\'' +
                 ", parameters=" + parameters +
                 ", outputName='" + outputName + '\'' +
-                ", jsonUrl='" + jsonUrl + '\'' +
+                ", jsonUrl='" + LogSafe.url(jsonUrl) + '\'' +
                 ", jdbcDriver='" + jdbcDriver + '\'' +
                 ", jdbcUrl='" + jdbcUrl + '\'' +
                 ", jdbcLogin='" + jdbcLogin + '\'' +

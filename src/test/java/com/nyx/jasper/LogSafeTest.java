@@ -29,6 +29,12 @@ public class LogSafeTest {
     }
 
     @Test
+    public void aJdbcPropertyIsMaskedToo() {
+        assertEquals("jdbc:sqlserver://sql.example:1433;databaseName=nyx;user=sa;password=***",
+                LogSafe.url("jdbc:sqlserver://sql.example:1433;databaseName=nyx;user=sa;password=hunter2"));
+    }
+
+    @Test
     public void theOtherCredentialNamesAreMaskedToo() {
         assertEquals("https://x/?password=***", LogSafe.url("https://x/?password=hunter2"));
         assertEquals("https://x/?secret=***", LogSafe.url("https://x/?secret=s3cr3t"));

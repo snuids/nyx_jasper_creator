@@ -1,0 +1,23 @@
+<jasperReport name="simple" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6a1d3f1e-6f7a-4a4b-8c2d-1a2b3c4d5e6f">
+	<parameter name="MESSAGE_DATA" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="GENERATION_TIME" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="TITLE" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Report"]]></defaultValueExpression>
+	</parameter>
+	<title height="40">
+		<element kind="textField" uuid="0d1e2f3a-4b5c-4d6e-8f70-8192a3b4c5d6" x="0" y="0" width="555" height="20">
+			<expression><![CDATA[$P{TITLE} + " / " + $P{GENERATION_TIME} + " / " + $P{MESSAGE_DATA}]]></expression>
+		</element>
+	</title>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<element kind="staticText" uuid="1c2d3e4f-5a6b-4c7d-8e9f-a0b1c2d3e4f5" x="0" y="0" width="555" height="20">
+				<text><![CDATA[detail]]></text>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

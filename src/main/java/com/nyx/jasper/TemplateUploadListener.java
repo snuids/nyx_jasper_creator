@@ -159,8 +159,14 @@ public class TemplateUploadListener implements MessageListener {
             logger.info("Created directory: {}", userDir.toAbsolutePath());
         }
         
-        // Save to jasperdef/{login} folder
-        Path outputPath = userDir.resolve(filename);
+        // Save to jasperdef/{login} folder. The name comes from a message header, so only its
+        // last segment is kept: `../../etc/passwd` used to be resolved against the user directory
+        // and could land anywhere the container can write.
+        String bareName = Paths.get(filename).getFileName().toString();
+        if (!bareName.equals(filename)) {
+            logger.warn("Template name contains a path, keeping only: {}", bareName);
+        }
+        Path outputPath = userDir.resolve(bareName);
         
         try (FileOutputStream fos = new FileOutputStream(outputPath.toFile())) {
             fos.write(decodedBytes);

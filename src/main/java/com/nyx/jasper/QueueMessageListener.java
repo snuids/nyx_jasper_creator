@@ -35,7 +35,7 @@ public class QueueMessageListener implements MessageListener {
             if (message instanceof TextMessage) {
                 TextMessage textMessage = (TextMessage) message;
                 messageContent = textMessage.getText();
-                logger.info("Received TextMessage: {}", messageContent);
+                logger.info("Received TextMessage: {}", LogSafe.url(messageContent));
                 
             } else if (message instanceof BytesMessage) {
                 BytesMessage bytesMessage = (BytesMessage) message;
@@ -45,7 +45,8 @@ public class QueueMessageListener implements MessageListener {
                     byte[] bytes = new byte[(int) bodyLength];
                     bytesMessage.readBytes(bytes);
                     messageContent = new String(bytes, StandardCharsets.UTF_8);
-                    logger.info("Received BytesMessage ({} bytes): {}", bodyLength, messageContent);
+                    logger.info("Received BytesMessage ({} bytes): {}", bodyLength,
+                            LogSafe.url(messageContent));
                 } else {
                     logger.warn("Received empty BytesMessage");
                 }
@@ -78,7 +79,7 @@ public class QueueMessageListener implements MessageListener {
      * @param messageText the message content in JSON format
      */
     private void processMessage(String messageText) {
-        logger.info("Processing message: {}", messageText);
+        logger.info("Processing message: {}", LogSafe.url(messageText));
         
         try {
             // Parse JSON message to extract template path and parameters
