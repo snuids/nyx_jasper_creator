@@ -1,0 +1,16 @@
+<jasperReport name="sql" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7b2e4a2f-7a8b-4b5c-9d3e-2b3c4d5e6f70">
+	<parameter name="MESSAGE_DATA" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<query language="sql"><![CDATA[SELECT name FROM site ORDER BY name]]></query>
+	<field name="name" class="java.lang.String">
+		<description><![CDATA[name]]></description>
+	</field>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<element kind="textField" uuid="2d3e4f5a-6b7c-4d8e-9f01-b2c3d4e5f607" x="0" y="0" width="555" height="20">
+				<expression><![CDATA[$F{name}]]></expression>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

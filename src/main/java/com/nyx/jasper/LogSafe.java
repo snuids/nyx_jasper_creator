@@ -13,9 +13,12 @@ import java.util.regex.Pattern;
  */
 public final class LogSafe {
 
-    /** `token`, `password`, `secret` and `key`, as a query parameter or a form field. */
+    /**
+     * `token`, `password`, `secret` and `key`, as a query parameter (`?…`, `&…`) or as a JDBC
+     * property (`jdbc:sqlserver://host;password=…`).
+     */
     private static final Pattern SECRET = Pattern.compile(
-            "([?&](?:token|password|passwd|secret|key|apikey)=)[^&\\s\"']*",
+            "([?&;](?:token|password|passwd|secret|key|apikey)=)[^&;\\s\"']*",
             Pattern.CASE_INSENSITIVE);
 
     private LogSafe() {

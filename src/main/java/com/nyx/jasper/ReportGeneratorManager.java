@@ -65,7 +65,7 @@ public class ReportGeneratorManager {
         // Generate report with parameters and optional JSON datasource
         String jsonUrl = messageData.getJsonUrl();
         if (jsonUrl != null && !jsonUrl.trim().isEmpty()) {
-            logger.info("JSON datasource URL provided: {}", jsonUrl);
+            logger.info("JSON datasource URL provided: {}", LogSafe.url(jsonUrl));
         }
         
         String outputName = messageData.getOutputName();
@@ -80,7 +80,8 @@ public class ReportGeneratorManager {
         String jdbcPassword = messageData.getJdbcPassword();
         
         if (jdbcUrl != null && !jdbcUrl.trim().isEmpty()) {
-            logger.info("JDBC connection parameters provided. Driver: {}, URL: {}", jdbcDriver, jdbcUrl);
+            logger.info("JDBC connection parameters provided. Driver: {}, URL: {}",
+                    jdbcDriver, LogSafe.url(jdbcUrl));
             return generator.generateReportWithJdbc(messageDataStr, messageData.getParameters(), 
                 jdbcDriver, jdbcUrl, jdbcLogin, jdbcPassword, outputName);
         }

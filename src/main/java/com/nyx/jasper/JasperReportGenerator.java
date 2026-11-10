@@ -193,7 +193,7 @@ public class JasperReportGenerator {
             }
             
             // Establish database connection
-            logger.info("Connecting to database: {}", jdbcUrl);
+            logger.info("Connecting to database: {}", LogSafe.url(jdbcUrl));
             connection = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             logger.info("Database connection established successfully");
             

@@ -30,6 +30,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
+      - name: Read the version from the pom
+        id: version
+        run: |
+          version=$(sed -n '0,/<version>/s/.*<version>\(.*\)<\/version>.*/\1/p' pom.xml)
+          echo "value=$version" >> "$GITHUB_OUTPUT"
+
       - name: Extract metadata (tags, labels)
         id: meta
         uses: docker/metadata-action@v5
@@ -55,6 +61,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
+          build-args: |
+            VERSION=${{ steps.version.outputs.value }}
       
       - name: Image digest
         run: echo ${{ steps.meta.outputs.digest }}
