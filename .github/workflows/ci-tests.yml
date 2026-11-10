@@ -54,8 +54,16 @@ jobs:
           # GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,
           # LINE_MISSED,LINE_COVERED,... — the badge reports line coverage, like the other repositories
           lines=$(awk -F, 'NR>1 {miss+=$8; cov+=$9} END {if (miss+cov>0) printf "%.2f", 100*cov/(miss+cov); else print "0"}' target/site/jacoco/jacoco.csv)
+          # the colour follows the value: a low number must not look reassuring
+          colour=$(awk -v v="$lines" 'BEGIN {
+              if (v >= 92) print "brightgreen";
+              else if (v >= 85) print "green";
+              else if (v >= 75) print "yellowgreen";
+              else if (v >= 60) print "yellow";
+              else if (v >= 40) print "orange";
+              else print "red" }')
           mkdir -p coverage
-          printf '{\n  "schemaVersion": 1,\n  "label": "coverage",\n  "message": "%s%%",\n  "color": "yellowgreen",\n  "value": %s\n}\n' "$lines" "$lines" > coverage/badge.json
+          printf '{\n  "schemaVersion": 1,\n  "label": "coverage",\n  "message": "%s%%",\n  "color": "%s",\n  "value": %s\n}\n' "$lines" "$colour" "$lines" > coverage/badge.json
           cat coverage/badge.json
 
       - name: Publish the coverage badge data
