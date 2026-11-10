@@ -36,6 +36,11 @@ public class Application {
     private ReportGeneratorManager reportGeneratorManager;
 
     public static void main(String[] args) {
+        logger.info("==============================");
+        logger.info("Starting: Nyx Jasper Creator");
+        logger.info("Module:   {}", Version);
+        logger.info("==============================");
+
         Application app = new Application();
 
         Runtime.getRuntime().addShutdownHook(new Thread(app::close, "shutdown-hook"));

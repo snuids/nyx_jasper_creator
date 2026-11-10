@@ -1,0 +1,84 @@
+name: CI - Tests
+
+# `mvn verify` compiles, runs the JUnit suite, writes the JaCoCo report and enforces its floor.
+# The floor lives in `pom.xml` (jacoco-maven-plugin, `check` execution): it is the level actually
+# measured, raised as tests land, never lowered.
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+      - '.github/workflows/ci-tests.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+      - '.github/workflows/ci-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  # `contents: write` to publish the badge on the `badges` branch (main only)
+  contents: write
+
+concurrency:
+  group: jasper-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          # the same JDK as the Dockerfile's builder stage
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Build, test and check the coverage floor
+        run: mvn -B -ntp verify
+
+      - name: Write the badge data
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          test -f target/site/jacoco/jacoco.csv
+          # GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,
+          # LINE_MISSED,LINE_COVERED,... — the badge reports line coverage, like the other repositories
+          lines=$(awk -F, 'NR>1 {miss+=$8; cov+=$9} END {if (miss+cov>0) printf "%.2f", 100*cov/(miss+cov); else print "0"}' target/site/jacoco/jacoco.csv)
+          mkdir -p coverage
+          printf '{\n  "schemaVersion": 1,\n  "label": "coverage",\n  "message": "%s%%",\n  "color": "yellowgreen",\n  "value": %s\n}\n' "$lines" "$lines" > coverage/badge.json
+          cat coverage/badge.json
+
+      - name: Publish the coverage badge data
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          test -f coverage/badge.json
+          cd "$RUNNER_TEMP"
+          git init -q badges
+          cd badges
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch -q --depth=1 origin badges || true
+          if git rev-parse --verify -q origin/badges >/dev/null; then
+            git checkout -q -b badges origin/badges
+          else
+            git checkout -q --orphan badges
+          fi
+          cp "$GITHUB_WORKSPACE/coverage/badge.json" coverage.json
+          git add coverage.json
+          git -c user.name="github-actions[bot]" \
+              -c user.email="github-actions[bot]@users.noreply.github.com" \
+              commit -q -m "coverage: ${GITHUB_SHA::7}"
+          git push -q origin badges
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
