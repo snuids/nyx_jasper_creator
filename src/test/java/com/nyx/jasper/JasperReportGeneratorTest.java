@@ -94,7 +94,7 @@ public class JasperReportGeneratorTest {
     public void aDatasourceThatCannotBeReachedStillProducesTheReport() throws Exception {
         JasperReportGenerator generator = new JasperReportGenerator(template, folder.getRoot().getAbsolutePath());
 
-        // 127.0.0.1:1 a le mérite d'être refusé tout de suite
+        // 127.0.0.1:1 has the merit of being refused immediately
         String path = generator.generateReport("message", null, "http://127.0.0.1:1/data", "fallback");
 
         assertTrue("the fallback is an empty datasource, not a failure", new File(path).exists());
