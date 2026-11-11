@@ -248,7 +248,21 @@ docker run -d --name activemq \
 
 Access the ActiveMQ Web Console at: http://localhost:8161 (use your configured credentials)
 
-## Testing the Application
+## Tests
+
+```bash
+mvn -B -ntp test     # 98 tests
+mvn -B -ntp verify   # the same, plus the JaCoCo gate
+```
+
+The suite runs against real collaborators where it can: a real `HttpServer` on the loopback for the
+JSON datasource and for the REST endpoint, real JRXML templates compiled by JasperReports, and H2 as
+the JDBC source. Coverage is measured by JaCoCo and gated at **90 %** of the instructions (measured on
+2026-11-11: **92,58 %**, 2 856 of 3 085; branches 78,21 %). `mvn verify` writes
+`target/site/jacoco/jacoco.csv`, which is the file to read for a per-class figure. Raise the floor as
+tests land, never lower it.
+
+## Testing the Application by hand
 
 You can send test messages to the queue using the ActiveMQ Web Console or using a simple producer:
 
